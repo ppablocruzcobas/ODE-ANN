@@ -6,6 +6,7 @@ from keras.models import Sequential
 from keras.callbacks import ModelCheckpoint, TerminateOnNaN
 from keras.layers import Dense
 from keras.utils import plot_model
+from initializers import PolynomialInitializer, LinearInitializer
 
 import keras.backend as K
 import callbacks as C
@@ -33,15 +34,6 @@ class RBNN():
         self.__acc = acc
         # Used to decide if show (1) or not (0) the training progress.
         self.__verbose = 1
-
-        self.__model = Sequential()
-        self.__model.add(Dense(1, name='input_layer', input_shape=(1,)))
-        self.__model.add(Dense(self.__units, activation=self.__afunc,
-                               name='hidden_layer'))
-        self.__model.add(Dense(1, name='output_layer'))
-
-        if self.__verbose is True:
-            self.__model.summary()
 
     def __gradient(self):
         """
@@ -92,13 +84,43 @@ class RBNN():
         __earlystop = C.EarlyStoppingByLoss(monitor='loss',
                                           baseline=self.__acc,
                                           verbose=self.__verbose)
-        __scheduler = C.LRScheduler(min_lr=0.00001, max_lr=0.001,
-                                    epochs=self.__epochs,
-                                    verbose=self.__verbose)
+        # __scheduler = C.LRScheduler(K, min_lr=0.00001, max_lr=0.001,
+                                    # epochs=self.__epochs,
+                                    # verbose=self.__verbose)
         # Show progress (also custom callback)...
         __progress = C.ShowProgress('loss', self.__epochs, progress, lb_loss)
         # Custom loss function
         __loss_f = self.__build_loss_function(points)
+
+        try:
+            __points = list(points.reshape(1, len(points))[0])
+            # If the initial condition is not in the interval, include it.
+            if ivp.get_x0() not in __points:
+                __points.insert(0, ivp.get_x0())
+            __values = []
+            __values.append(ivp.get_x0())
+            for i in range(len(__points) - 1):
+                __values.append(0)
+
+            __polynomial = PolynomialInitializer(self.__eqfunc, self.__units,
+                                                 __points, __values)
+            __linear = LinearInitializer(K, self.__afunc,
+                                         __points, __polynomial.get_weights())
+        except:
+            __polynomial = 'glorot_uniform'
+            __linear = 'glorot_uniform'
+
+        self.__model = Sequential()
+        self.__model.add(Dense(1, input_shape=(1,),
+                               name='input_layer'))
+        self.__model.add(Dense(self.__units, activation=self.__afunc,
+                               kernel_initializer=__polynomial,
+                               name='hidden_layer'))
+        self.__model.add(Dense(1, kernel_initializer=__linear,
+                               name='output_layer'))
+
+        if self.__verbose:
+            self.__model.summary()
 
         self.__model.compile(loss=__loss_f, optimizer=self.__optimizer)
         # Save the model diagram
@@ -112,7 +134,7 @@ class RBNN():
                                      epochs=self.__epochs,
                                      verbose=self.__verbose,
                                      callbacks=[__checkpoint, __earlystop,
-                                                __NaN, __progress, __scheduler])
+                                                __NaN, __progress])
 
         # Load the `optimal` weights
         self.__model.load_weights('model.h5', by_name=True)

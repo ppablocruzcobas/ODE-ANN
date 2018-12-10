@@ -69,7 +69,6 @@ class WindowImpls():
         __re = QRegExp("[1-9]+[0-9]+")
         __int_validator = QRegExpValidator(__re)
         self.ui.editIterations.setValidator(__int_validator)
-        self.ui.editNeurons.setValidator(__int_validator)
 
         # Regular Expression for `float` representations
         __re = QRegExp(
@@ -128,6 +127,7 @@ class WindowImpls():
         if __dfile[0] is not '':
             try:
                 self.__data = np.loadtxt(__dfile[0])
+                self.ui.editNeurons.setMaximum(len(self.__data))
                 self.__data = self.__data.reshape(len(self.__data), 1)
                 self.ui.editSolutionInterval.setText(__dfile[0])
             except:
@@ -156,7 +156,8 @@ class WindowImpls():
                 sbn.set(font_scale=1)
                 plt.xlabel("t")
                 plt.ylabel("x")
-                plt.plot(self.__interval, self.__values, "b--", label='rbnn')
+                plt.scatter(self.__interval, self.__values, marker="*",
+                            label='results')
                 plt.legend()
                 plt.show(self.__fig_result)
                 plt.savefig("result.png", format="png")
@@ -172,8 +173,6 @@ class WindowImpls():
         The graphic a results are saved by default, in files `result.png`
         and `result.txt`, respectly.
         """
-        self.__trained = False
-
         __condition = eval(self.ui.editInitialCondition.text())
 
         if self.__data is None:
@@ -182,10 +181,14 @@ class WindowImpls():
                     eval(self.ui.editSolutionInterval.text()))
                 self.__interval = self.__interval.reshape(len(self.__interval), 1)
             except:
-                self.ui.statusBar.showMessage('Invalid solution interval format', -1)
+                self.ui.statusBar.showMessage('Invalid solution \
+                interval format', -1)
                 return
         else:
             self.__interval = self.__data
+
+        self.__trained = False
+        self.ui.editNeurons.setMaximum(len(self.__interval))
 
         try:
             ivp = IVP(Expression(self.ui.editEquation.text(), ['t', 'x']),
@@ -214,10 +217,17 @@ class WindowImpls():
             self.__lbLoss.text() + '. The training took '
             + '{:.2f}'.format(__end_t - __start_t) + ' segs.')
 
-        self.__values = ivp(self.__interval)
-        np.savetxt("result.txt", self.__values, fmt='%10.4f')
+        try:
+            self.__values = ivp(self.__interval)
+            np.savetxt("result.txt", self.__values, fmt='%10.4f')
+        except:
+            self.ui.statusBar.showMessage('An error ocurred trying to \
+            save data. Check your code!', -1)
+            return
 
         self.__trained = True
+        self.ui.editNeurons.setMaximum(999999)
+
         self.onPlotSelectionChange(0)
         self.onPlotSelectionChange(1)
 

@@ -4,16 +4,11 @@ __author__ = "Pedro Pablo"
 
 import sys
 import window as w
-import gc
 
 from window_impls import WindowImpls
-import keras.backend as K
 
 
 if __name__ == "__main__":
-    # Enable the Automatic Garbage Collector
-    gc.enable()
-
     app = w.QtWidgets.QApplication(sys.argv)
     wnd = w.QtWidgets.QMainWindow()
     app.setApplicationDisplayName("RBNN")
@@ -28,7 +23,6 @@ if __name__ == "__main__":
 
     ui.editEquation.textChanged.connect(wUI.onEditValueChange)
     ui.editInitialCondition.textChanged.connect(wUI.onEditValueChange)
-    ui.editNeurons.textChanged.connect(wUI.onEditValueChange)
     ui.editSolutionInterval.textChanged.connect(wUI.onEditValueChange)
     ui.editAccuracy.textChanged.connect(wUI.onEditValueChange)
     ui.editIterations.textChanged.connect(wUI.onEditValueChange)

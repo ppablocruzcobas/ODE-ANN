@@ -144,8 +144,11 @@
           <height>30</height>
          </size>
         </property>
-        <property name="statusTip">
+        <property name="toolTip">
          <string>f(x, t)</string>
+        </property>
+        <property name="statusTip">
+         <string/>
         </property>
         <property name="inputMask">
          <string/>
@@ -215,8 +218,11 @@
           <height>30</height>
          </size>
         </property>
+        <property name="toolTip">
+         <string>initial condition</string>
+        </property>
         <property name="statusTip">
-         <string>self explained in label!, :p</string>
+         <string/>
         </property>
         <property name="inputMethodHints">
          <set>Qt::ImhExclusiveInputMask</set>
@@ -276,6 +282,9 @@
             <height>30</height>
            </size>
           </property>
+          <property name="toolTip">
+           <string>from where to load interval solution</string>
+          </property>
           <item>
            <property name="text">
             <string>from file</string>
@@ -309,7 +318,7 @@
            <string/>
           </property>
           <property name="statusTip">
-           <string>[x0, x1, x2,..., xN]</string>
+           <string/>
           </property>
           <property name="placeholderText">
            <string>[x0, x1, x2,..., xN]</string>
@@ -453,8 +462,11 @@
               <height>30</height>
              </size>
             </property>
-            <property name="statusTip">
+            <property name="toolTip">
              <string>which activation function to use</string>
+            </property>
+            <property name="statusTip">
+             <string/>
             </property>
             <property name="currentIndex">
              <number>0</number>
@@ -524,8 +536,11 @@
               <height>30</height>
              </size>
             </property>
-            <property name="statusTip">
+            <property name="toolTip">
              <string>which optimization method to use</string>
+            </property>
+            <property name="statusTip">
+             <string/>
             </property>
             <property name="currentIndex">
              <number>0</number>
@@ -604,8 +619,11 @@
             <height>30</height>
            </size>
           </property>
-          <property name="statusTip">
+          <property name="toolTip">
            <string>number of epochs of the training</string>
+          </property>
+          <property name="statusTip">
+           <string/>
           </property>
           <property name="text">
            <string>1000</string>
@@ -643,40 +661,6 @@
           </property>
           <property name="text">
            <string>Neurons: </string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QLineEdit" name="editNeurons">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>80</width>
-            <height>30</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>80</width>
-            <height>30</height>
-           </size>
-          </property>
-          <property name="statusTip">
-           <string>amount of neurons in the hidden layer</string>
-          </property>
-          <property name="text">
-           <string>5</string>
-          </property>
-          <property name="placeholderText">
-           <string>5</string>
-          </property>
-          <property name="clearButtonEnabled">
-           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -731,8 +715,11 @@
             <height>30</height>
            </size>
           </property>
+          <property name="toolTip">
+           <string>desired solution precision</string>
+          </property>
           <property name="statusTip">
-           <string>solution precision</string>
+           <string/>
           </property>
           <property name="text">
            <string>1e-2</string>
@@ -742,6 +729,31 @@
           </property>
           <property name="clearButtonEnabled">
            <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QSpinBox" name="editNeurons">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>80</width>
+            <height>30</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>number of neurons in the hidden layer (can't be greater than points in interval)</string>
+          </property>
+          <property name="minimum">
+           <number>1</number>
+          </property>
+          <property name="maximum">
+           <number>999999999</number>
           </property>
          </widget>
         </item>
@@ -841,8 +853,11 @@
           <height>30</height>
          </size>
         </property>
-        <property name="statusTip">
+        <property name="toolTip">
          <string>whatever to show a graphical solution or not</string>
+        </property>
+        <property name="statusTip">
+         <string/>
         </property>
         <property name="text">
          <string>Plot Solution</string>
@@ -857,8 +872,11 @@
       </item>
       <item>
        <widget class="QCheckBox" name="cbPlotLoss">
-        <property name="statusTip">
+        <property name="toolTip">
          <string>whatever to show the loss vs. epoch history or not</string>
+        </property>
+        <property name="statusTip">
+         <string/>
         </property>
         <property name="text">
          <string>Plot Loss</string>
