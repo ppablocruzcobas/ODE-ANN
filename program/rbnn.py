@@ -56,8 +56,8 @@ class RBNN():
 
     def __build_loss_function(self, t):
         """
-        Constructs the loss function to be used update the weights.
-        `t` is the tensor of the points in which the equation want to be solved.
+        Constructs the loss function to be used to update the weights.
+        `t` is the tensor of the points at which the equation want to be solved.
         """
         __t = K.tf.convert_to_tensor(t, dtype=K.tf.float32, name='points')
 
@@ -82,33 +82,30 @@ class RBNN():
         __NaN = TerminateOnNaN()
         # Custom Callback to stop when 'baseline' is reached
         __earlystop = C.EarlyStoppingByLoss(monitor='loss',
-                                          baseline=self.__acc,
-                                          verbose=self.__verbose)
-        # __scheduler = C.LRScheduler(K, min_lr=0.00001, max_lr=0.001,
-                                    # epochs=self.__epochs,
-                                    # verbose=self.__verbose)
+                                            baseline=self.__acc,
+                                            verbose=self.__verbose)
         # Show progress (also custom callback)...
         __progress = C.ShowProgress('loss', self.__epochs, progress, lb_loss)
         # Custom loss function
         __loss_f = self.__build_loss_function(points)
 
-        try:
-            __points = list(points.reshape(1, len(points))[0])
+        # try:
+            # __points = list(points.reshape(1, len(points))[0])
             # If the initial condition is not in the interval, include it.
-            if ivp.get_x0() not in __points:
-                __points.insert(0, ivp.get_x0())
-            __values = []
-            __values.append(ivp.get_x0())
-            for i in range(len(__points) - 1):
-                __values.append(0)
+            # if ivp.get_t0() not in __points:
+                # __points.insert(0, ivp.get_t0())
+            # __values = []
+            # __values.append(ivp.get_x0())
+            # for i in range(len(__points)):
+                # __values.append(0)
 
-            __polynomial = PolynomialInitializer(self.__eqfunc, self.__units,
-                                                 __points, __values)
-            __linear = LinearInitializer(K, self.__afunc,
-                                         __points, __polynomial.get_weights())
-        except:
-            __polynomial = 'glorot_uniform'
-            __linear = 'glorot_uniform'
+            # __polynomial = PolynomialInitializer(self.__eqfunc, self.__units,
+                                                 # __points, __values)
+            # __linear = LinearInitializer(K, self.__afunc,
+                                         # __points, __polynomial.get_weights())
+        # except:
+        __polynomial = 'glorot_uniform'
+        __linear = 'glorot_uniform'
 
         self.__model = Sequential()
         self.__model.add(Dense(1, input_shape=(1,),
@@ -130,7 +127,7 @@ class RBNN():
         __data_tensor = K.eval(
             K.tf.convert_to_tensor(points, name='data_tensor'))
         __history = self.__model.fit(__data_tensor, __data_tensor,
-                                     batch_size=len(__data_tensor),
+                                     batch_size=len(points),
                                      epochs=self.__epochs,
                                      verbose=self.__verbose,
                                      callbacks=[__checkpoint, __earlystop,
@@ -138,7 +135,8 @@ class RBNN():
 
         # Load the `optimal` weights
         self.__model.load_weights('model.h5', by_name=True)
-
+        # Pass the solution to the `ivp` instance
         ivp.set_solution(self.__trial_solution)
-
+        # Return the `history` of training to be able to plot
+        # almost any kind of info (like `loss` vs `epoch`)
         return __history

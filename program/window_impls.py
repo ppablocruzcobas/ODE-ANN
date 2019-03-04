@@ -19,7 +19,7 @@ import seaborn as sbn
 class WindowImpls():
     """
     Implement the slots of some of the events that may be fired by the
-    compoments declared in `ui` class.
+    components declared in `ui` class.
     """
     def __init__(self, ui):
         """
@@ -127,7 +127,7 @@ class WindowImpls():
         if __dfile[0] is not '':
             try:
                 self.__data = np.loadtxt(__dfile[0])
-                self.ui.editNeurons.setMaximum(len(self.__data))
+                # self.ui.editNeurons.setMaximum(len(self.__data))
                 self.__data = self.__data.reshape(len(self.__data), 1)
                 self.ui.editSolutionInterval.setText(__dfile[0])
             except:
@@ -188,7 +188,7 @@ class WindowImpls():
             self.__interval = self.__data
 
         self.__trained = False
-        self.ui.editNeurons.setMaximum(len(self.__interval))
+        # self.ui.editNeurons.setMaximum(len(self.__interval))
 
         try:
             ivp = IVP(Expression(self.ui.editEquation.text(), ['t', 'x']),
