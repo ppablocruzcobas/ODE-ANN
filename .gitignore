@@ -1,0 +1,4 @@
+results/
+program/results/
+program/ui/__pycache__
+program/nnet/__pycache__
